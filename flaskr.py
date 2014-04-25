@@ -81,9 +81,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-	#session['logged_in'] = False	# Maybe this will work. (Nope. Logging out still not working. Could be Polipo or Privoxy's fault.))
 	session.pop('logged_in', None)
-	flash('You were logged out')
+	flash('You were logged out.')
 	return redirect(url_for('show_entries'))
 
 if __name__ == '__main__':
