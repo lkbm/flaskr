@@ -9,11 +9,11 @@ create table entries (
 drop table if exists users;
 create table users (
 	id integer primary key autoincrement,
-	username text not null,
+	username text not null unique,
+	password text not null,
 	email text not null
 );
 
 -- For development purposes, prepopulate the database with a user:
-insert into users values (1, "Admin", "luca.masters@gmail.com");
-
+insert into users values (1, "admin", "secret", "luca.masters@gmail.com");
 
