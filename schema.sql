@@ -3,7 +3,8 @@ create table entries (
 	id integer primary key autoincrement,
 	title text not null,
 	text text not null,
-	author id not null
+	author id not null,
+	timestamp datetime
 );
 
 drop table if exists users;

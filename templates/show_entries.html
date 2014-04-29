@@ -13,9 +13,10 @@
 	{% endif %}
 	<ul class=entries>
 	{% for entry in entries %}
-		<li><h2><b>{{ entry.title }}</b> by {{ entry.author }}</h2>{{ entry.text|safe }}
-		{% if session.logged_in %}
+		<li><h2><b>{{ entry.title }}</b> by {{ entry.author }}
 			(<a href="{{ url_for('delete_entry', id=entry.id) }}">Delete</a>)
+		</h2>{{ entry.text }}<h3>{{ entry.timestamp }}</h3>
+		{% if session.logged_in %}
 		{% endif %}
 	{% else %}
 		<li><em>Unbelievable. No entries here so far.</em>

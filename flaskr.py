@@ -5,6 +5,7 @@
 # all the imports
 import os
 import sqlite3
+from bs4 import BeautifulSoup
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
 # Create the application
@@ -52,7 +53,7 @@ def close_db(error):
 def show_entries():
 	db = get_db()
 	#cur = db.execute('select id, title, text, author from entries order by id desc')
-	cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, users.username as author from entries join users WHERE entries.author=users.id order by id desc')
+	cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author from entries join users WHERE entries.author=users.id order by id desc')
 	entries = cur.fetchall()
 	return render_template('show_entries.html', entries=entries)
 
@@ -61,7 +62,8 @@ def add_entry():
 	if not session.get('logged_in'):
 		abort(401)
 	db = get_db()
-	db.execute('insert into entries (title, text, author) values (?, ?, ?)', [request.form['title'], request.form['text'], session.get('id')])
+	# HTML isn't blocked in insertion, but the templating engine will scrub it unless epxlicitly told not to via |safe:
+	db.execute('insert into entries (title, text, author, timestamp) values (?, ?, ?, datetime())', [request.form['title'], request.form['text'], session.get('id')])
 	db.commit()
 	flash('New entry was successfully posted')
 	return redirect(url_for('show_entries'))
