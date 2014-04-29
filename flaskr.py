@@ -5,7 +5,6 @@
 # all the imports
 import os
 import sqlite3
-from bs4 import BeautifulSoup
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
 # Create the application
