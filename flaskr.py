@@ -101,7 +101,7 @@ def delete_entry(id):
 		db = get_db()
 		db.execute('delete from entries where id=?', str(id))
 		db.commit()
-		flash('Deletion not implemented ' + str(id))
+		flash('Deleted post ' + str(id))
 	except ValueError:
 		flash('Not a valid id')
 	return redirect(url_for('show_entries'))
