@@ -6,13 +6,20 @@
 <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 <meta http-equiv="pragma" content="no-cache" />
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<script src="https://login.persona.org/include.js"></script>
+<script src="{{ url_for('static', filename='persona.js') }}"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<body onload="call_watcher();">
 <div class=page>
 	<h1>Flaskr</h1>
 	<div class=metanav>
 	{% if not session.logged_in %}
 		<a href="{{ url_for('login') }}">log in</a>
+		<a href="#" onclick="navigator.id.request();">(Use Persona)</a>
 	{% else %}
 		<A href="{{ url_for('logout') }}">log out</a>
+		<a href="#" onclick="navigator.id.logout();">(Use Persona)</a>
 	{% endif %}
 	</div>
 	{% for message in get_flashed_messages() %}

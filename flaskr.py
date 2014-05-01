@@ -106,7 +106,33 @@ def delete_entry(id):
 		flash('Not a valid id')
 	return redirect(url_for('show_entries'))
 
+@app.route('/persona_login', methods=['POST'])
+def persona_login():
+    return "OK"
+    # The request has to have an assertion for us to verify
+    if 'assertion' not in request.form:
+        abort(400)
+
+    # Send the assertion to Mozilla's verifier service.
+    data = {'assertion': request.form['assertion'], 'audience': 'http://127.0.0.1:5000'}
+    resp = requests.post('https://verifier.login.persona.org/verify', data=data, verify=True)
+
+    # Did the verifier respond?
+    if resp.ok:
+        # Parse the response
+        verification_data = json.loads(resp.content)
+
+        # Check if the assertion was valid
+        if verification_data['status'] == 'okay':
+			# Log the user in by setting a secure session cookie
+			session.update({'email': verification_data['email']})
+			flash('You are now logged in as ' + session['email'])
+			return redirect(url_for('show_entries'))
+
+    # Oops, something failed. Abort.
+    abort(500)
+
 if __name__ == '__main__':
-	init_db()
+	#init_db()
 	app.run()
 
