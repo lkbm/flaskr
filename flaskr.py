@@ -5,6 +5,8 @@
 # all the imports
 import os
 import sqlite3
+import requests
+import json
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
 # Create the application
@@ -17,7 +19,7 @@ app.config.update(dict(
 	DEBUG=True,
 	SECRET_KEY='dev key',
 	# USERNAME='admin',
-    # PASSWORD='secret'
+	# PASSWORD='secret'
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
@@ -108,31 +110,57 @@ def delete_entry(id):
 
 @app.route('/persona_login', methods=['POST'])
 def persona_login():
-    return "OK"
-    # The request has to have an assertion for us to verify
-    if 'assertion' not in request.form:
-        abort(400)
+	# The request has to have an assertion for us to verify
+	if 'assertion' not in request.form:
+		abort(400)
 
-    # Send the assertion to Mozilla's verifier service.
-    data = {'assertion': request.form['assertion'], 'audience': 'http://127.0.0.1:5000'}
-    resp = requests.post('https://verifier.login.persona.org/verify', data=data, verify=True)
+	# Send the assertion to Mozilla's verifier service.
+	data = {'assertion': request.form['assertion'], 'audience': 'http://127.0.0.1:5000'}
+	resp = requests.post('https://verifier.login.persona.org/verify', data=data, verify=True)
 
-    # Did the verifier respond?
-    if resp.ok:
-        # Parse the response
-        verification_data = json.loads(resp.content)
+	#flash(resp)
+	#return redirect(url_for('show_entries'))
+	#abort(404)
+	# Did the verifier respond?
+	if resp.ok:
+	# Parse the response
+		verification_data = json.loads(resp.content)
+		
+		# Check if the assertion was valid
+		#flash(verification_data['status'])
+		#return redirect(url_for('show_entries'))
+		if verification_data['status'] == 'okay':
+			db = get_db()
+			user_list = db.execute('select id, username, email from users where email=?', [verification_data['email']])
+			users = user_list.fetchall()
+			if len(users) == 0:
+				error = 'Nonexistent user'	# Maybe we should create it.
+				"""
+				# Should we be doing anything with passwords?
+			elif users[0][2] != request.form['password']:
+				error = 'Incorrect password'
+				"""
+			else:
+				session['logged_in'] = True
+				session['id'] = users[0][0]
+				session['username'] = users[0][1]
+				# Log the user in by setting a secure session cookie
+				session.update({'email': verification_data['email']})
+				flash('You are now logged in as ' + session['email'])
+				return redirect(url_for('show_entries'))
+			return render_template('login.html', error=error)
 
-        # Check if the assertion was valid
-        if verification_data['status'] == 'okay':
-			# Log the user in by setting a secure session cookie
-			session.update({'email': verification_data['email']})
-			flash('You are now logged in as ' + session['email'])
-			return redirect(url_for('show_entries'))
+	# Oops, something failed. Abort.
+	abort(500)
 
-    # Oops, something failed. Abort.
-    abort(500)
+@app.route('/persona_logout', methods=['POST'])
+def persona_logout():
+	flash('Logout Not implemented.')
+	abort(404)
+	return render_template('login.html', error='Logout isn\'t yet implemented.')
+	return "Not implemented."
 
 if __name__ == '__main__':
-	#init_db()
+	init_db()
 	app.run()
 
