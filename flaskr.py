@@ -90,7 +90,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-	session.pop('logged_in', None)
+	session.clear()	#session.pop('logged_in', None)
 	flash('You were logged out.')
 	return redirect(url_for('show_entries'))
 
@@ -155,10 +155,13 @@ def persona_login():
 
 @app.route('/persona_logout', methods=['POST'])
 def persona_logout():
-	flash('Logout Not implemented.')
-	abort(404)
-	return render_template('login.html', error='Logout isn\'t yet implemented.')
-	return "Not implemented."
+	if not session.get('logged_in'):
+			abort(401)
+	else:
+		flash('User logged out.')
+		session.clear()
+		return "plo OK"
+	return redirect(url_for('show_entries'))
 
 if __name__ == '__main__':
 	init_db()
