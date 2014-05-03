@@ -80,6 +80,8 @@ def login():
 			error = 'Nonexistent user'
 		elif users[0][2] != request.form['password']:
 			error = 'Incorrect password'
+		elif users[0][2] == "":
+			error = 'username/password login not configured for account. Try Mozilla Persona login.'
 		else:
 			session['logged_in'] = True
 			session['id'] = users[0][0]
@@ -118,12 +120,9 @@ def persona_login():
 	data = {'assertion': request.form['assertion'], 'audience': 'http://127.0.0.1:5000'}
 	resp = requests.post('https://verifier.login.persona.org/verify', data=data, verify=True)
 
-	#flash(resp)
-	#return redirect(url_for('show_entries'))
-	#abort(404)
 	# Did the verifier respond?
 	if resp.ok:
-	# Parse the response
+		# Parse the response
 		verification_data = json.loads(resp.content)
 		
 		# Check if the assertion was valid
@@ -134,23 +133,27 @@ def persona_login():
 			user_list = db.execute('select id, username, email from users where email=?', [verification_data['email']])
 			users = user_list.fetchall()
 			if len(users) == 0:
-				error = 'Nonexistent user'	# Maybe we should create it.
-				"""
-				# Should we be doing anything with passwords?
-			elif users[0][2] != request.form['password']:
-				error = 'Incorrect password'
-				"""
+				# Create account:
+				db.execute('insert into users (username, password, email) values (?, ?, ?)', [verification_data['email'], "", verification_data['email']])
+				db.commit()
+				flash('New account created. You can change your username (and password, if you wish to set one) in your profile settings.')
+                # Try selecting account again:
+				user_list = db.execute('select id, username, email from users where email=?', [verification_data['email']])
+				users = user_list.fetchall()
 			else:
-				session['logged_in'] = True
-				session['id'] = users[0][0]
-				session['username'] = users[0][1]
-				# Log the user in by setting a secure session cookie
-				session.update({'email': verification_data['email']})
 				flash('You are now logged in as ' + session['email'])
-				return redirect(url_for('show_entries'))
-			return render_template('login.html', error=error)
+			session['logged_in'] = True
+			session['id'] = users[0][0]
+			session['username'] = users[0][1]
+			session['email'] = verification_data['email']
+			#session.update({'email': verification_data['email']})
+			return redirect(url_for('show_entries'))
+		else:
+			abort(401)
+		error = 'verification status not okay.'
+		return render_template('login.html', error=error)
 
-	# Oops, something failed. Abort.
+	# Oops, no response. Abort.
 	abort(500)
 
 @app.route('/persona_logout', methods=['POST'])

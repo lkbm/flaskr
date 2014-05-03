@@ -16,7 +16,7 @@ function call_watcher()
 				success: function(res, status, xhr) {console.log('Logged in.'); window.location.reload(); },
 				error: function(xhr, status, err) {
 					//navigator.id.logout();
-					console.log("Login failure: " + err);
+					console.log("Login failure: " + status + "=" + err);
 				}
 			});
 		},

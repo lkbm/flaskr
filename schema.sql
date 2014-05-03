@@ -16,5 +16,6 @@ create table users (
 );
 
 -- For development purposes, prepopulate the database with a user:
-insert into users values (1, "admin", "secret", "luca.masters@gmail.com");
+-- insert into users values (1, "admin", "secret", "luca.masters@gmail.com");
+insert into users values (1, "admin", "secret", "luca.masters2@gmail.com");
 
