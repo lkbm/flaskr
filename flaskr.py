@@ -74,7 +74,7 @@ def login():
 	error = None
 	if request.method == 'POST':
 		db = get_db()
-		user_list = db.execute('select id, username, password from users where username=?', [request.form['username']])
+		user_list = db.execute('select id, username, password, email from users where username=?', [request.form['username']])
 		users = user_list.fetchall()
 		if len(users) == 0:
 			error = 'Nonexistent user'
@@ -86,6 +86,7 @@ def login():
 			session['logged_in'] = True
 			session['id'] = users[0][0]
 			session['username'] = users[0][1]
+			session['email'] = users[0][3]
 			flash('You are now logged in as ' + session['username'])
 			return redirect(url_for('show_entries'))
 	return render_template('login.html', error=error)
