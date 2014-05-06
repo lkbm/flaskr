@@ -144,6 +144,7 @@ def persona_login():
 			else:
 				flash('You are now logged in as ' + session['email'])
 			session['logged_in'] = True
+			session['persona_login'] = True
 			session['id'] = users[0][0]
 			session['username'] = users[0][1]
 			session['email'] = verification_data['email']
@@ -159,7 +160,7 @@ def persona_login():
 
 @app.route('/persona_logout', methods=['POST'])
 def persona_logout():
-	if not session.get('logged_in'):
+	if not session.get('logged_in') or not session.get('persona_login'):
 			abort(401)
 	else:
 		flash('User logged out.')
