@@ -168,6 +168,28 @@ def persona_logout():
 		return "plo OK"
 	return redirect(url_for('show_entries'))
 
+@app.route('/process_edit_user', methods=['POST'])
+def process_edit_user():
+	if not session.get('logged_in'):
+		abort(401)
+	db = get_db()
+	# HTML isn't blocked in insertion, but the templating engine will scrub it unless epxlicitly told not to via |safe:
+	db.execute('update users set username=? WHERE email=?', [request.form['username'], session['email']])
+	db.commit()
+	session['username'] = request.form['username']
+	# TODO: If password defined, also set password.
+	flash('User successfully updated')
+	return redirect(url_for('edit_user'))
+
+@app.route('/edit_user')
+def edit_user():
+	db = get_db()
+	#cur = db.execute('select id, title, text, author from entries order by id desc')
+	#cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author from entries join users WHERE entries.author=users.id order by id desc')
+	#entries = cur.fetchall()
+	return render_template('edit_user.html')
+
+
 if __name__ == '__main__':
 	init_db()
 	app.run()
