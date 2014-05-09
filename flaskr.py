@@ -188,6 +188,13 @@ def edit_user():
 	db = get_db()
 	return render_template('edit_user.html')
 
+@app.route('/cal')
+def show_events():
+	db = get_db()
+	#cur = db.execute('select id, title, text, author from entries order by id desc')
+	cur = db.execute('select events.id as id, events.title as title, events.description as text, events.date, users.username as username from events join users WHERE events.owner=users.id order by id desc')
+	entries = cur.fetchall()
+	return render_template('show_entries.html', entries=entries)
 
 if __name__ == '__main__':
 	init_db()
