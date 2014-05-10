@@ -191,10 +191,35 @@ def edit_user():
 @app.route('/cal')
 def show_events():
 	db = get_db()
-	#cur = db.execute('select id, title, text, author from entries order by id desc')
-	cur = db.execute('select events.id as id, events.title as title, events.description as text, events.date, users.username as username from events join users WHERE events.owner=users.id order by id desc')
-	entries = cur.fetchall()
-	return render_template('show_entries.html', entries=entries)
+	cur = db.execute('select events.id as id, events.title as title, events.description as text, events.date, users.username as owner from events join users WHERE events.owner=users.id order by id desc')
+	events = cur.fetchall()
+	return render_template('show_events.html', events=events)
+
+@app.route('/add_event', methods=['POST'])
+def add_event():
+	if not session.get('logged_in'):
+		abort(401)
+	db = get_db()
+	# HTML isn't blocked in insertion, but the templating engine will scrub it unless epxlicitly told not to via |safe:
+	# TODO: Make dates be dates. Seems sqlite will accept any old text as a date?
+	db.execute('insert into events (title, description, owner, date) values (?, ?, ?, ?)', [request.form['title'], request.form['description'], session.get('id'), request.form['date']])
+	db.commit()
+	flash('New event was successfully posted')
+	return redirect(url_for('show_events'))
+
+@app.route('/del_event/<id>')
+def delete_event(id):
+	if not session.get('logged_in'):
+		abort(401)
+	try:
+		id = int(id)
+		db = get_db()
+		db.execute('delete from events where id=?', str(id))
+		db.commit()
+		flash('Deleted event ' + str(id))
+	except ValueError:
+		flash('Not a valid id')
+	return redirect(url_for('show_events'))
 
 if __name__ == '__main__':
 	init_db()

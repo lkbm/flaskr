@@ -5,17 +5,19 @@
 			<dl>
 				<dt>Title:
 				<dd><input type=text size=30 name=title>
-				<dt>Text:
-				<dd><textarea name=text rows=5 cols=40></textarea>
-				<dd><input type=submit value=Share>
+				<dt>Date:
+				<dd><input type=text size=10 placeholder="yyyy-mm-dd" name=date>
+				<dt>Description:
+				<dd><textarea name=description rows=5 cols=40></textarea>
+				<dd><input type=submit value=Add>
 			</dl>
 		</form>
 	{% endif %}
 	<ul class=events>
 	{% for event in events %}
-		<li><h2><b>{{ event.title }}</b> by {{ event.author }}
-			(<a href="{{ url_for('delete_event', id=event.id) }}">Delete</a>)
+		<li><h2><b>{{ event.title }}</b> on <b>{{ event.date }}</b> by {{ event.owner }}
 		</h2>{{ event.text }}<h3>{{ event.timestamp }}</h3>
+			(<a href="{{ url_for('delete_event', id=event.id) }}">Delete</a>)
 		{% if session.logged_in %}
 		{% endif %}
 	{% else %}
