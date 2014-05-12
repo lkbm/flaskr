@@ -105,9 +105,16 @@ def delete_entry(id):
 	try:
 		id = int(id)
 		db = get_db()
-		db.execute('delete from entries where id=?', str(id))
-		db.commit()
-		flash('Deleted post ' + str(id))
+		entries = db.execute('select entries.author as author from entries WHERE id=?', (str(id),))
+		entry = entries.fetchall()
+		if len(entry) == 0:
+			flash('Nonexistent post')
+		elif entry[0][0] != session['id']:
+			flash('You may only delete your own posts.')
+		else:
+			db.execute('delete from entries where id=?', (str(id),))
+			db.commit()
+			flash('Deleted post ' + str(id))
 	except ValueError:
 		flash('Not a valid id')
 	return redirect(url_for('show_entries'))
