@@ -225,9 +225,16 @@ def delete_event(id):
 	try:
 		id = int(id)
 		db = get_db()
-		db.execute('delete from events where id=?', str(id))
-		db.commit()
-		flash('Deleted event ' + str(id))
+		events = db.execute('select events.owner as owner from events WHERE id=?', (str(id),))
+		event = events.fetchall()
+		if len(event) == 0:
+			flash('Nonexistent event')
+		elif event[0][0] != session['id']:
+			flash('You may only delete your own events.')
+		else:
+			db.execute('delete from events where id=?', (str(id),))
+			db.commit()
+			flash('Deleted event ' + str(id))
 	except ValueError:
 		flash('Not a valid id')
 	return redirect(url_for('show_events'))
