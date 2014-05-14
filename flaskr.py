@@ -8,6 +8,7 @@ import sqlite3
 import requests
 import json
 import re
+import dateutil.parser
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
 
 # Create the application
@@ -208,10 +209,10 @@ def add_event():
 	if not session.get('logged_in'):
 		abort(401)
 	# HTML isn't blocked in insertion, but the templating engine will scrub it unless epxlicitly told not to via |safe:
-	# TODO: Make dates be dates. Seems sqlite will accept any old text as a date?
-	if re.match(r'^\d{4}-\d{2}-\d{2}$', request.form['date']):
+	event_date = validate_date(request.form['date'])
+	if(event_date):
 		db = get_db()
-		db.execute('insert into events (title, description, owner, date) values (?, ?, ?, ?)', [request.form['title'], request.form['description'], session.get('id'), request.form['date']])
+		db.execute('insert into events (title, description, owner, date) values (?, ?, ?, ?)', [request.form['title'], request.form['description'], session.get('id'), event_date])
 		db.commit()
 		flash('New event was successfully posted')
 	else:
@@ -238,6 +239,12 @@ def delete_event(id):
 	except ValueError:
 		flash('Not a valid id')
 	return redirect(url_for('show_events'))
+
+def validate_date(date):
+	try:
+		return dateutil.parser.parse(date).date().strftime("%Y-%m-%d")
+	except ValueError:
+		return False
 
 if __name__ == '__main__':
 	init_db()
