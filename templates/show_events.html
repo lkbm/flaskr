@@ -1,12 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
 	{% if session.logged_in %}
+		<script>
+			$(function() { $( "#date_field" ).datepicker({ dateFormat: "yy-mm-dd" });});
+		</script>
 		<form action="{{ url_for('add_event') }}" method=post class=add-event>
 			<dl>
 				<dt>Title:
 				<dd><input type=text size=30 name=title required>
 				<dt>Date:
-				<dd><input type=date size=10 pattern="^\d{4}-\d{2}-\d{2}$" placeholder="yyyy-mm-dd" name=date required>
+				<dd><input type=date size=10 id="date_field" pattern="^\d{4}-\d{2}-\d{2}$" placeholder="yyyy-mm-dd" name=date required>
 				<dt>Description:
 				<dd><textarea name=description rows=5 cols=40></textarea>
 				<dd><input type=submit value=Add>
