@@ -9,7 +9,7 @@ import requests
 import json
 import re
 import dateutil.parser
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, make_response, flash
 
 # Create the application
 app = Flask(__name__)
@@ -97,7 +97,12 @@ def login():
 def logout():
 	session.clear()	#session.pop('logged_in', None)
 	flash('You were logged out.')
-	return redirect(url_for('show_entries'))
+	response = make_response(redirect(url_for('show_entries')))
+	response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+	response.headers['pragma'] = 'no-cache'
+	response.headers['expires'] = '0'
+	return response
+
 
 @app.route('/del/<id>')
 def delete_entry(id):
