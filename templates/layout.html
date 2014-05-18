@@ -22,7 +22,8 @@ var currentUser = '{{ session.get('email') }}';
 		<a href="{{ url_for('login') }}">log in</a>
 		<a href="#" onclick="navigator.id.request();">(Use Persona)</a>
 	{% else %}
-		<A href="{{ url_for('logout') }}">log out</a>
+		<div>Logged in as <name>{{ session.get('username') }}</name></div>
+		<a href="{{ url_for('logout') }}">log out</a>
 		<a href="#" onclick="navigator.id.logout();">(Use Persona)</a>
 	{% endif %}
 	</div>
