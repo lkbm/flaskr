@@ -22,7 +22,7 @@ var currentUser = '{{ session.get('email') }}';
 		<a href="{{ url_for('login') }}">log in</a>
 		<a href="#" onclick="navigator.id.request();">(Use Persona)</a>
 	{% else %}
-		<div>Logged in as <a href="{{ url_for('edit_user') }}">{{ session.get('username') }}</a></div>
+		<div>Logged in as <a href="{{ url_for('show_user', id=session.id) }}">{{ session.get('username') }}</a> (<a href="{{ url_for('edit_user') }}">Edit</a>)</div>
 		<a href="{{ url_for('logout') }}">log out</a>
 		<a href="#" onclick="navigator.id.logout();">(Use Persona)</a>
 	{% endif %}

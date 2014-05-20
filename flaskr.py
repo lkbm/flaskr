@@ -245,6 +245,21 @@ def delete_event(id):
 		flash('Not a valid id')
 	return redirect(url_for('show_events'))
 
+@app.route('/user/<id>')
+def show_user(id):
+	try:
+		id = int(id)
+		db = get_db()
+		user_list = db.execute('select id, username, email from users where id=?', (str(id),))
+		user = user_list.fetchall()
+		if len(user) == 0:
+			flash('Nonexistent user')
+		else:
+			return render_template('show_user.html', users=user)
+	except ValueError:
+		flash('Not a valid id')
+	return redirect(url_for('show_entries'))
+
 def validate_date(date):
 	try:
 		return dateutil.parser.parse(date).date().strftime("%Y-%m-%d")

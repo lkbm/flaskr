@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+	{% if session.logged_in %}
+		{% if session['id'] == id %}
+			This is you!
+		{% endif %}
+	{% endif %}
+	{% for user in users %}
+		<h2>{{ user.username }}</h2>
+	{% else %}
+		<li><em>User doesn't exist.</em>
+	{% endfor %}
+	</ul>
+{% endblock %}
