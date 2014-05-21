@@ -255,7 +255,7 @@ def show_user(id):
 		if len(user) == 0:
 			flash('Nonexistent user')
 		else:
-			return render_template('show_user.html', users=user)
+			return render_template('show_user.html', users=user, id=id)
 	except ValueError:
 		flash('Not a valid id')
 	return redirect(url_for('show_entries'))
