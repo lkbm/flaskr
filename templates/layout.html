@@ -16,7 +16,7 @@ var currentUser = '{{ session.get('email') }}';
 <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <body onload="call_watcher();">
 <div class=page>
-	<h1>Flaskr</h1>
+	<h1><a href="/">Flaskr</a></h1>
 	<div class=metanav>
 	{% if not session.logged_in %}
 		<a href="{{ url_for('login') }}">log in</a>

@@ -56,7 +56,7 @@ def close_db(error):
 def show_entries():
 	db = get_db()
 	#cur = db.execute('select id, title, text, author from entries order by id desc')
-	cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author from entries join users WHERE entries.author=users.id order by id desc')
+	cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
 	entries = cur.fetchall()
 	return render_template('show_entries.html', entries=entries)
 
