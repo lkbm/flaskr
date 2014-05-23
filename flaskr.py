@@ -54,11 +54,26 @@ def close_db(error):
 
 @app.route('/')
 def show_entries():
+	return render_template('show_entries.html', entries=get_entries(0))
+
+def get_entries(id):
 	db = get_db()
-	#cur = db.execute('select id, title, text, author from entries order by id desc')
-	cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
-	entries = cur.fetchall()
-	return render_template('show_entries.html', entries=entries)
+	id = int(id)
+	try:
+		id = int(id)
+		db = get_db()
+		flash(id)
+		cur = 0
+		if id == 0:
+			cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
+			flash('Generic.')
+		else:
+			cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id AND entries.author=? order by id desc', (str(id),))
+			flash('Specific')
+		return cur.fetchall()
+	except ValueError:
+		flash('Not a valid id')
+	return []
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -255,7 +270,7 @@ def show_user(id):
 		if len(user) == 0:
 			flash('Nonexistent user')
 		else:
-			return render_template('show_user.html', users=user, id=id)
+			return render_template('show_user.html', users=user, id=id, entries=get_entries(id))
 	except ValueError:
 		flash('Not a valid id')
 	return redirect(url_for('show_entries'))
