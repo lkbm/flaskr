@@ -62,14 +62,11 @@ def get_entries(id):
 	try:
 		id = int(id)
 		db = get_db()
-		flash(id)
 		cur = 0
 		if id == 0:
 			cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
-			flash('Generic.')
 		else:
 			cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id AND entries.author=? order by id desc', (str(id),))
-			flash('Specific')
 		return cur.fetchall()
 	except ValueError:
 		flash('Not a valid id')
