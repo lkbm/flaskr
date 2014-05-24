@@ -101,6 +101,7 @@ def login():
 			session['id'] = users[0][0]
 			session['username'] = users[0][1]
 			session['email'] = users[0][3]
+			session['login_type'] = 'username'
 			flash('You are now logged in as ' + session['username'])
 			return redirect(url_for('show_entries'))
 	return render_template('login.html', error=error)
@@ -174,6 +175,7 @@ def persona_login():
 			session['id'] = users[0][0]
 			session['username'] = users[0][1]
 			session['email'] = verification_data['email']
+			session['login_type'] = 'Persona'
 			#session.update({'email': verification_data['email']})
 			return redirect(url_for('show_entries'))
 		else:
