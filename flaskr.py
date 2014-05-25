@@ -280,6 +280,24 @@ def validate_date(date):
 	except ValueError:
 		return False
 
+@app.route('/register')
+def register_user():
+	return render_template('new_user.html')
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+	db = get_db()
+	user_list = db.execute('select id, username, email from users where email=?', [request.form['email']])
+	user = user_list.fetchall()
+	if len(user) == 0:
+		db.execute('insert into users (username, email, password) values (?, ?, ?)', [request.form['username'], request.form['email'], request.form['password']])
+		db.commit()
+		flash('User added')
+		# Should also log in.
+	else:
+		flash('User already registered with that email address.')
+	return redirect(url_for('show_entries'))
+
 if __name__ == '__main__':
 	init_db()
 	app.run()

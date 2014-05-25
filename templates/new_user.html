@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+	{% if session.logged_in %}
+		You already have an account.
+	{% else %}
+		<form action="{{ url_for('add_user') }}" method=post class=add-entry>
+			<dl>
+				<dt>Username:
+				<dd><input type=text size=30 name=username>
+				<dt>Email address:
+				<dd><input type=text size=30 name=email>
+				<dt>Password:
+				<dd><input type=password size=30 name=password>
+				<dd><input type=submit value=Edit>
+			</dl>
+		</form>
+	{% endif %}
+{% endblock %}
