@@ -293,7 +293,7 @@ def add_user():
 		db.execute('insert into users (username, email, password) values (?, ?, ?)', [request.form['username'], request.form['email'], request.form['password']])
 		db.commit()
 		flash('User added')
-		# Should also log in.
+		login();
 	else:
 		flash('User already registered with that email address.')
 	return redirect(url_for('show_entries'))
