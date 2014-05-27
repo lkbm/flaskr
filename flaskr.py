@@ -9,6 +9,7 @@ import requests
 import json
 import re
 import dateutil.parser
+import bcrypt
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, make_response, flash
 
 # Create the application
@@ -20,6 +21,7 @@ app.config.update(dict(
 	DATABASE=os.path.join(app.root_path, 'flaskr.db'),
 	DEBUG=True,
 	SECRET_KEY='dev key',
+	WORK_FACTOR=11
 	# USERNAME='admin',
 	# PASSWORD='secret'
 ))
@@ -92,11 +94,9 @@ def login():
 		users = user_list.fetchall()
 		if len(users) == 0:
 			error = 'Nonexistent user'
-		elif users[0][2] != request.form['password']:
-			error = 'Incorrect password'
 		elif users[0][2] == "":
 			error = 'username/password login not configured for account. Try Mozilla Persona login.'
-		else:
+		elif bcrypt.hashpw(request.form['password'], users[0][2]) == users[0][2]:
 			session['logged_in'] = True
 			session['id'] = users[0][0]
 			session['username'] = users[0][1]
@@ -104,6 +104,8 @@ def login():
 			session['login_type'] = 'username'
 			flash('You are now logged in as ' + session['username'])
 			return redirect(url_for('show_entries'))
+		else:
+			error = 'Incorrect password'
 	return render_template('login.html', error=error)
 
 @app.route('/logout')
@@ -290,7 +292,9 @@ def add_user():
 	user_list = db.execute('select id, username, email from users where email=?', [request.form['email']])
 	user = user_list.fetchall()
 	if len(user) == 0:
-		db.execute('insert into users (username, email, password) values (?, ?, ?)', [request.form['username'], request.form['email'], request.form['password']])
+		password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['DATABASE']))
+		flash(password)
+		db.execute('insert into users (username, email, password) values (?, ?, ?)', [request.form['username'], request.form['email'], password])
 		db.commit()
 		flash('User added')
 		login();
