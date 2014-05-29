@@ -292,10 +292,11 @@ def add_user():
 	user_list = db.execute('select id, username, email from users where email=?', [request.form['email']])
 	user = user_list.fetchall()
 	if len(user) == 0:
-		password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['DATABASE']))
+		password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['WORK_FACTOR']))
 		flash(password)
 		db.execute('insert into users (username, email, password) values (?, ?, ?)', [request.form['username'], request.form['email'], password])
 		db.commit()
+		flash('password')
 		flash('User added')
 		login();
 	else:

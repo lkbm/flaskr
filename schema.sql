@@ -25,6 +25,5 @@ create table events (
 );
 
 -- For development purposes, prepopulate the database with a user:
--- insert into users values (1, "admin", "secret", "luca.masters@gmail.com");
-insert into users values (1, "admin", "secret", "luca.masters2@gmail.com");
-
+insert into users values (1, "admin", "$2a$11$.ovzB8JWma93E5MwbiLX5.H6yZ6NOtLlUv9ZgrqxXb/FDGr.UGJzG ", "luca.masters2@gmail.com");
+-- password=secret
