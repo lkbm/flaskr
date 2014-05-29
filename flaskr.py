@@ -293,10 +293,8 @@ def add_user():
 	user = user_list.fetchall()
 	if len(user) == 0:
 		password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['WORK_FACTOR']))
-		flash(password)
 		db.execute('insert into users (username, email, password) values (?, ?, ?)', [request.form['username'], request.form['email'], password])
 		db.commit()
-		flash('password')
 		flash('User added')
 		login();
 	else:
