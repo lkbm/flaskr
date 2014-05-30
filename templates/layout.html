@@ -13,13 +13,13 @@ var currentUser = '{{ session.get('email') }}';
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <script src="https://login.persona.org/include.js"></script>
 <script src="{{ url_for('static', filename='persona.js') }}"></script>
-<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <body onload="call_watcher();">
 <div class=page>
 	<h1><a href="/">Flaskr</a></h1>
 	<div class=metanav>
 	{% if not session.logged_in %}
-		<a href="{{ url_for('login') }}">log in</a>
+		<span title="{{ url_for('login') }}" id="login">log in</span>
+		<div id="loginform">Username<br />Password</div>
 		<a href="#" onclick="navigator.id.request();">(Use Persona)</a>
 		/ <a href="{{ url_for('register_user') }}">register</a>
 	{% else %}
@@ -35,4 +35,6 @@ var currentUser = '{{ session.get('email') }}';
 		<div class=flash>{{ message }} (<span onclick="$(this.parentNode).fadeOut(250);">Dismiss</span>)</div>
 	{% endfor %}
 	{% block body %}{% endblock %}
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<script src="{{ url_for('static', filename='misc.js') }}"></script>
 </div>
