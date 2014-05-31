@@ -289,7 +289,7 @@ def register_user():
 @app.route('/add_user', methods=['POST'])
 def add_user():
 	db = get_db()
-	user_list = db.execute('select id, username, email from users where email=?', [request.form['email']])
+	user_list = db.execute('select id, username, email from users where email=? or username=?', [request.form['email'], request.form['username']])
 	user = user_list.fetchall()
 	if len(user) == 0:
 		password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['WORK_FACTOR']))
@@ -298,7 +298,7 @@ def add_user():
 		flash('User added')
 		login();
 	else:
-		flash('User already registered with that email address.')
+		flash('User already registered with that username or email address.')
 	return redirect(url_for('show_entries'))
 
 if __name__ == '__main__':

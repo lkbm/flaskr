@@ -19,7 +19,17 @@ var currentUser = '{{ session.get('email') }}';
 	<div class=metanav>
 	{% if not session.logged_in %}
 		<span title="{{ url_for('login') }}" id="login">log in</span>
-		<div id="loginform">Username<br />Password</div>
+		<div id="loginform" style="position: absolute; top: 30px; background: #fff; border: 3px solid #bbb;">
+	<form action="{{ url_for('login') }}" method=post>
+		<dl>
+			<dt>Username:
+			<dd><input type=text name=username>
+			<dt>Password:
+			<dd><input type=password name=password>
+			<dd><input type=submit value=Login>
+		</dl>
+	</form>
+	</div>
 		<a href="#" onclick="navigator.id.request();">(Use Persona)</a>
 		/ <a href="{{ url_for('register_user') }}">register</a>
 	{% else %}
