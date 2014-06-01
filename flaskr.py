@@ -56,10 +56,13 @@ def close_db(error):
 
 @app.route('/')
 def show_entries():
+	#db = get_db()
+	#cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
+	#entries = cur.fetchall()
+	#return render_template('show_entries.html', entries=entries)
 	return render_template('show_entries.html', entries=get_entries(0))
 
 def get_entries(id):
-	db = get_db()
 	id = int(id)
 	try:
 		id = int(id)
@@ -301,7 +304,12 @@ def add_user():
 		flash('User already registered with that username or email address.')
 	return redirect(url_for('show_entries'))
 
-if __name__ == '__main__':
-	init_db()
-	app.run()
 
+@app.route('/initdb')
+def initiate_db():
+	init_db()
+
+	return redirect(url_for('show_entries'))
+
+if __name__ == '__main__':
+	app.run()
