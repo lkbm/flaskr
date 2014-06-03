@@ -10,6 +10,7 @@ import json
 import re
 import dateutil.parser
 import bcrypt
+from BeautifulSoup import BeautifulSoup
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, make_response, flash
 
 # Create the application
@@ -21,9 +22,10 @@ app.config.update(dict(
 	DATABASE=os.path.join(app.root_path, 'flaskr.db'),
 	DEBUG=True,
 	SECRET_KEY='dev key',
-	WORK_FACTOR=11
+	WORK_FACTOR=11,
 	# USERNAME='admin',
 	# PASSWORD='secret'
+	ALLOWED_TAGS = ['strong', 'b', 'em', 'i', 'br', 'p', 'ul', 'ol', 'li', 'dl', 'dt', 'dd']
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
@@ -314,6 +316,13 @@ def initiate_db():
 	init_db()
 
 	return redirect(url_for('show_entries'))
+
+def santisize_html(str):
+	soup = BeautifulSoup(soup)
+	for tag in soup.findAll(True):
+			if tag.name not in app.config['ALLOWED_TAGS']:
+					tag,extract()
+	return unicode(soup)
 
 if __name__ == '__main__':
 	app.run()

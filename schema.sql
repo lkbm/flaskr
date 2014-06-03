@@ -13,7 +13,8 @@ create table users (
 	id integer primary key autoincrement,
 	username text not null unique,
 	password text not null,
-	email text not null
+	email text not null,
+	reputation integer,
 );
 
 drop table if exists events;
