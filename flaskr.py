@@ -306,10 +306,10 @@ def add_user():
 		flash('User already registered with that username or email address.')
 	return redirect(url_for('show_entries'))
 
-@app.route('/vote', methods=['POST'])
+@app.route('/vote', methods=['POST', 'GET'])
 def record_vote():
 	flash('Not yet implemented.')
-	return render_template('show_events.html')
+	return redirect(url_for('show_entries'))
 
 @app.route('/initdb')
 def initiate_db():
