@@ -30,7 +30,7 @@ drop table if exists votes;
 create table votes (
 	id integer primary key autoincrement,
 	user_id integer not null,
-	event_id integer not null,
+	eentry_id integer not null,
 	upvote bool
 );
 
