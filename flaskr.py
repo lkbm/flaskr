@@ -169,7 +169,7 @@ def persona_login():
 			users = user_list.fetchall()
 			if len(users) == 0:
 				# Create account:
-				db.execute('insert into users (username, password, email) values (?, ?, ?)', [verification_data['email'], "", verification_data['email']])
+				db.execute('insert into users (username, password, email, reputation) values (?, ?, ?, 0)', [verification_data['email'], "", verification_data['email']])
 				db.commit()
 				flash('New account created. You can change your username (and password, if you wish to set one) in your profile settings.')
                 # Try selecting account again:
@@ -298,7 +298,7 @@ def add_user():
 	user = user_list.fetchall()
 	if len(user) == 0:
 		password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['WORK_FACTOR']))
-		db.execute('insert into users (username, email, password) values (?, ?, ?)', [request.form['username'], request.form['email'], password])
+		db.execute('insert into users (username, email, password, reputation) values (?, ?, ?, 0)', [request.form['username'], request.form['email'], password])
 		db.commit()
 		flash('User added')
 		login();
@@ -314,7 +314,6 @@ def record_vote():
 @app.route('/initdb')
 def initiate_db():
 	init_db()
-
 	return redirect(url_for('show_entries'))
 
 def santisize_html(str):

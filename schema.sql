@@ -14,7 +14,7 @@ create table users (
 	username text not null unique,
 	password text not null,
 	email text not null,
-	reputation integer,
+	reputation integer
 );
 
 drop table if exists events;
@@ -30,10 +30,10 @@ drop table if exists votes;
 create table votes (
 	id integer primary key autoincrement,
 	user_id integer not null,
-	eentry_id integer not null,
+	entry_id integer not null,
 	upvote bool
 );
 
 -- For development purposes, prepopulate the database with a user:
-insert into users values (1, "admin", "$2a$11$KTg9hr8lVvePTxm9GkikV.gNw/6Is0to8S7RPSGo3NH43JbidHQky", "luca.masters2@gmail.com");
+insert into users values (1, "admin", "$2a$11$KTg9hr8lVvePTxm9GkikV.gNw/6Is0to8S7RPSGo3NH43JbidHQky", "luca.masters2@gmail.com", 0);
 -- password=secret
