@@ -75,6 +75,8 @@ def get_entries(id):
 		else:
 			cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id AND entries.author=? order by id desc', (str(id),))
 		return cur.fetchall()
+		#rows = cur.fetchall()
+		#return map(sanitize_html, rows)
 	except ValueError:
 		flash('Not a valid id')
 	return []
@@ -316,11 +318,15 @@ def initiate_db():
 	init_db()
 	return redirect(url_for('show_entries'))
 
-def santisize_html(str):
-	soup = BeautifulSoup(soup)
+@app.route('/test')
+def itest():
+	return sanitize_html("<b>T</b>e<i>s</i><blink>t</blink>.")
+
+def sanitize_html(str):
+	soup = BeautifulSoup(str)
 	for tag in soup.findAll(True):
 			if tag.name not in app.config['ALLOWED_TAGS']:
-					tag,extract()
+					tag.extract()
 	return unicode(soup)
 
 if __name__ == '__main__':
