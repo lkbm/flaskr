@@ -319,15 +319,20 @@ def initiate_db():
 	return redirect(url_for('show_entries'))
 
 @app.route('/test')
-def itest():
+def test():
+	#return entries[0].title
+	#return ''.join(map(sanitize_html, entries))
 	return sanitize_html("<b>T</b>e<i>s</i><blink>t</blink>.")
 
-def sanitize_html(str):
-	soup = BeautifulSoup(str)
-	for tag in soup.findAll(True):
-			if tag.name not in app.config['ALLOWED_TAGS']:
-					tag.extract()
-	return unicode(soup)
+@app.context_processor
+def utility_processor():
+	def sanitize_html(str):
+		soup = BeautifulSoup(str)
+		for tag in soup.findAll(True):
+				if tag.name not in app.config['ALLOWED_TAGS']:
+						tag.extract()
+		return unicode(soup)
+	return dict(sanitize_html=sanitize_html)
 
 if __name__ == '__main__':
 	app.run()
