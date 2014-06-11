@@ -308,9 +308,16 @@ def add_user():
 		flash('User already registered with that username or email address.')
 	return redirect(url_for('show_entries'))
 
-@app.route('/vote', methods=['POST', 'GET'])
-def record_vote():
-	flash('Not yet implemented.')
+@app.route('/vote/<id>')
+def record_vote(id):
+	if not session.get('logged_in'):
+		abort(401)
+	try:
+		id = int(id)
+		flash('Not yet implemented.')
+		flash('Attemped to upvote entry id ' + str(id))
+	except ValueError:
+		flash('Not a valid id')
 	return redirect(url_for('show_entries'))
 
 @app.route('/initdb')
