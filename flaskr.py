@@ -314,7 +314,11 @@ def record_vote(id):
 		abort(401)
 	try:
 		id = int(id)
-		flash('Not yet implemented.')
+		flash('Partially implemented.')
+		db = get_db()
+		db.execute('update entries SET score=score+1 WHERE id=?', (str(id),))
+		db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True)
+		db.commit()
 		flash('Attemped to upvote entry id ' + str(id))
 	except ValueError:
 		flash('Not a valid id')
