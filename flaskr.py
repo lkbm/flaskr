@@ -64,6 +64,17 @@ def show_entries():
 	#return render_template('show_entries.html', entries=entries)
 	return render_template('show_entries.html', entries=get_entries(0))
 
+def get_entry(id):
+	id = int(id)
+	try:
+		id = int(id)
+		db = get_db()
+		cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id AND entries.id=? order by id desc', (str(id),))
+		return cur.fetchone()
+	except ValueError:
+		flash('Not a valid id')
+	return []
+
 def get_entries(id):
 	id = int(id)
 	try:
@@ -80,6 +91,14 @@ def get_entries(id):
 	except ValueError:
 		flash('Not a valid id')
 	return []
+
+@app.route('/entry/<id>')
+def show_entry(id):
+	#db = get_db()
+	#cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
+	#entries = cur.fetchall()
+	#return render_template('show_entries.html', entries=entries)
+	return render_template('show_entry.html', entry=get_entry(id))
 
 @app.route('/add', methods=['POST'])
 def add_entry():
