@@ -335,9 +335,13 @@ def record_vote(id):
 		id = int(id)
 		flash('Partially implemented.')
 		db = get_db()
-		db.execute('update entries SET score=score+1 WHERE id=?', (str(id),))
-		db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True])
-		db.commit()
+		q = db.execute('SELECT user_id, entry_id, upvote FROM votes WHERE user_id=? AND entry_id=?', [session['id'], str(id)])
+		if q.fetchone() == None:
+			db.execute('update entries SET score=score+1 WHERE id=?', (str(id),))
+			db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True])
+			db.commit()
+		else:
+			flash('You have already voted on this entry.')
 		flash('Attemped to upvote entry id ' + str(id))
 	except ValueError:
 		flash('Not a valid id')
