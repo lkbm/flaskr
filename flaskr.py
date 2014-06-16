@@ -69,7 +69,7 @@ def get_entry(id):
 	try:
 		id = int(id)
 		db = get_db()
-		cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id AND entries.id=? order by id desc', (str(id),))
+		cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, entries.score as score, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id AND entries.id=? order by id desc', (str(id),))
 		return cur.fetchone()
 	except ValueError:
 		flash('Not a valid id')
@@ -106,7 +106,7 @@ def add_entry():
 		abort(401)
 	db = get_db()
 	# HTML isn't blocked in insertion, but the templating engine will scrub it unless epxlicitly told not to via |safe:
-	db.execute('insert into entries (title, text, author, timestamp) values (?, ?, ?, datetime())', [request.form['title'], request.form['text'], session.get('id')])
+	db.execute('insert into entries (title, text, author, score, timestamp) values (?, ?, ?, 0, datetime())', [request.form['title'], request.form['text'], session.get('id')])
 	db.commit()
 	flash('New entry was successfully posted')
 	return redirect(url_for('show_entries'))
