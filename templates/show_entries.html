@@ -16,7 +16,7 @@
 		<li><h2><b>{{ entry.title }}</b> by <a href="{{ url_for('show_user', id=entry.author_id) }}">{{ entry.author }}</a>
 			(<a href="{{ url_for('record_vote', id=entry.id) }}">+</a>)
 			(<a href="{{ url_for('delete_entry', id=entry.id) }}">Delete</a>)
-		</h2>{{ sanitize_html(entry.text)|safe }}<h3>{{ entry.timestamp }}</h3>
+		</h2>{{ sanitize_html(entry.text)|safe }}<h3><a href="{{ url_for('show_entry', id=entry.id) }}">{{ entry.timestamp }}</a></h3>
 		{% if session.logged_in %}
 		{% endif %}
 	{% else %}
