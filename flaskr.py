@@ -327,8 +327,8 @@ def add_user():
 		flash('User already registered with that username or email address.')
 	return redirect(url_for('show_entries'))
 
-@app.route('/vote/<id>')
-def record_vote(id):
+@app.route('/vote/<id>/<vote_type>')
+def record_vote(id, vote_type):
 	if not session.get('logged_in'):
 		abort(401)
 	try:
@@ -337,7 +337,12 @@ def record_vote(id):
 		db = get_db()
 		q = db.execute('SELECT user_id, entry_id, upvote FROM votes WHERE user_id=? AND entry_id=?', [session['id'], str(id)])
 		if q.fetchone() == None:
-			db.execute('update entries SET score=score+1 WHERE id=?', (str(id),))
+			# Allows you to vote for non-existent entries.
+			diff = 1
+			# Counts any value other than 'down' as 'up'. Is that good?
+			if vote_type == 'down':
+					diff = -1
+			db.execute('update entries SET score=score+? WHERE id=?', (diff, str(id),))
 			db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True])
 			db.commit()
 		else:
