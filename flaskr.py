@@ -328,8 +328,9 @@ def record_vote(id, vote_type):
 		db = get_db()
 		q = db.execute('SELECT user_id, entry_id, upvote FROM votes WHERE user_id=? AND entry_id=?', [session['id'], str(id)])
 		if q.fetchone() == None:
-			q = db.execute('SELECT id FROM entries WHERE id=?', [str(id)])
-			if q.fetchone() == None:
+			q = db.execute('SELECT author FROM entries WHERE id=?', [str(id)])
+			author = q.fetchone();
+			if author == None:
 				flash('Entry doesn\'t exist.')
 			else:
 				diff = 1
@@ -338,6 +339,7 @@ def record_vote(id, vote_type):
 						diff = -1
 				db.execute('update entries SET score=score+? WHERE id=?', (diff, str(id),))
 				db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True])
+				db.execute('UPDATE users SET reputation=reputation+? WHERE id=?', (diff, str(id),))
 				db.commit()
 		else:
 			flash('You have already voted on this entry.')
