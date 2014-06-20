@@ -58,10 +58,6 @@ def close_db(error):
 
 @app.route('/')
 def show_entries():
-	#db = get_db()
-	#cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
-	#entries = cur.fetchall()
-	#return render_template('show_entries.html', entries=entries)
 	return render_template('show_entries.html', entries=get_entries(0))
 
 def get_entry(id):
@@ -94,10 +90,6 @@ def get_entries(id):
 
 @app.route('/entry/<id>')
 def show_entry(id):
-	#db = get_db()
-	#cur = db.execute('select entries.id as id, entries.title as title, entries.text as text, entries.timestamp, users.username as author, users.id as author_id from entries join users WHERE entries.author=users.id order by id desc')
-	#entries = cur.fetchall()
-	#return render_template('show_entries.html', entries=entries)
 	return render_template('show_entry.html', entry=get_entry(id))
 
 @app.route('/add', methods=['POST'])
@@ -333,18 +325,20 @@ def record_vote(id, vote_type):
 		abort(401)
 	try:
 		id = int(id)
-		flash('Partially implemented.')
 		db = get_db()
 		q = db.execute('SELECT user_id, entry_id, upvote FROM votes WHERE user_id=? AND entry_id=?', [session['id'], str(id)])
 		if q.fetchone() == None:
-			# Allows you to vote for non-existent entries.
-			diff = 1
-			# Counts any value other than 'down' as 'up'. Is that good?
-			if vote_type == 'down':
-					diff = -1
-			db.execute('update entries SET score=score+? WHERE id=?', (diff, str(id),))
-			db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True])
-			db.commit()
+			q = db.execute('SELECT id FROM entries WHERE id=?', [str(id)])
+			if q.fetchone() == None:
+				flash('Entry doesn\'t exist.')
+			else:
+				diff = 1
+				# Counts any value other than 'down' as 'up'. Is that good?
+				if vote_type == 'down':
+						diff = -1
+				db.execute('update entries SET score=score+? WHERE id=?', (diff, str(id),))
+				db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True])
+				db.commit()
 		else:
 			flash('You have already voted on this entry.')
 		flash('Attemped to upvote entry id ' + str(id))
@@ -355,6 +349,7 @@ def record_vote(id, vote_type):
 @app.route('/initdb')
 def initiate_db():
 	init_db()
+	return "Database initialized."
 	return redirect(url_for('show_entries'))
 
 @app.route('/test')
