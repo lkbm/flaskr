@@ -284,7 +284,7 @@ def show_user(id):
 	try:
 		id = int(id)
 		db = get_db()
-		user_list = db.execute('select id, username, email from users where id=?', (str(id),))
+		user_list = db.execute('select id, username, email, reputation from users where id=?', (str(id),))
 		user = user_list.fetchall()
 		if len(user) == 0:
 			flash('Nonexistent user')
@@ -339,7 +339,7 @@ def record_vote(id, vote_type):
 						diff = -1
 				db.execute('update entries SET score=score+? WHERE id=?', (diff, str(id),))
 				db.execute('INSERT into votes (user_id, entry_id, upvote) VALUES(?, ?, ?)', [session['id'], str(id), True])
-				db.execute('UPDATE users SET reputation=reputation+? WHERE id=?', (diff, str(id),))
+				db.execute('UPDATE users SET reputation=reputation+? WHERE id=?', (diff, session['id']))
 				db.commit()
 		else:
 			flash('You have already voted on this entry.')
