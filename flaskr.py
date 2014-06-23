@@ -24,8 +24,6 @@ app.config.update(dict(
 	SECRET_KEY='dev key',
 	WORK_FACTOR=11,
 	IP='10.10.20.71',
-	# USERNAME='admin',
-	# PASSWORD='secret'
 	ALLOWED_TAGS = ['strong', 'b', 'em', 'i', 'br', 'p', 'ul', 'ol', 'li', 'dl', 'dt', 'dd']
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
