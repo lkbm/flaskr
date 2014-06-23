@@ -23,6 +23,7 @@ app.config.update(dict(
 	DEBUG=True,
 	SECRET_KEY='dev key',
 	WORK_FACTOR=11,
+	IP='10.10.20.71',
 	# USERNAME='admin',
 	# PASSWORD='secret'
 	ALLOWED_TAGS = ['strong', 'b', 'em', 'i', 'br', 'p', 'ul', 'ol', 'li', 'dl', 'dt', 'dd']
@@ -375,4 +376,4 @@ def utility_processor():
 	return dict(sanitize_html=sanitize_html)
 
 if __name__ == '__main__':
-	app.run()
+	app.run(host=app.config['IP'])
