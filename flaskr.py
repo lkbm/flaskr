@@ -329,10 +329,14 @@ def record_vote(id, vote_type):
 		q = db.execute('SELECT user_id, entry_id, upvote FROM votes WHERE user_id=? AND entry_id=?', [session['id'], str(id)])
 		if q.fetchone() == None:
 			q = db.execute('SELECT author FROM entries WHERE id=?', [str(id)])
-			author = q.fetchone();
-			if author == None:
+			entry = q.fetchone();
+			if entry['author'] == None:
 				flash('Entry doesn\'t exist.')
+			elif entry['author'] == session['id']:
+				flash('You can\'t vote for yourself.')
 			else:
+				flash(session['id'])
+				flash(entry['author'])
 				diff = 1
 				# Counts any value other than 'down' as 'up'. Is that good?
 				if vote_type == 'down':
