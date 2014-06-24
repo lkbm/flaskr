@@ -34,6 +34,24 @@ create table votes (
 	upvote bool
 );
 
+
+drop table if exists people
+create table people (
+	id integer primary key autoincrement,
+	sid integer unique,
+	last_name text,
+	first_name text,
+	enroll_1 date,
+	withdrawal_1 date,
+	enroll_2 date,
+	withdrawal_2 date,
+	enroll_3 date,
+	withdrawal_3 date,
+	free_as_of date,
+	reduced_as_of date,
+);
+
+
 -- For development purposes, prepopulate the database with a user:
 insert into users values (1, "admin", "$2a$11$KTg9hr8lVvePTxm9GkikV.gNw/6Is0to8S7RPSGo3NH43JbidHQky", "luca.masters2@gmail.com", 0);
 -- password=secret
