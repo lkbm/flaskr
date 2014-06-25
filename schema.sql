@@ -51,6 +51,14 @@ create table people (
 	reduced_as_of date
 );
 
+drop table if exists meals;
+create table meals (
+	id integer primary key autoincrement,
+	pid integer,
+	meal_date date,
+	lunch bool
+);
+
 INSERT INTO people (last_name, first_name, enroll_1, withdrawal_1) VALUES ("Green", "Hank", 2014-08-26, 2014-09-01);
 INSERT INTO people (last_name, first_name, enroll_1) VALUES ("Manderly", "Wyman", 2014-08-28);
 INSERT INTO people (last_name, first_name, enroll_1, withdrawal_1) VALUES ("Stark", "Lyanna", 2014-08-30, 2014-09-02);
