@@ -59,6 +59,29 @@ def close_db(error):
 def show_entries():
 	return render_template('show_entries.html', entries=get_entries(0))
 
+@app.route('/person/<id>')
+def show_person(id):
+	try:
+		id = int(id)
+		db = get_db()
+		user_list = db.execute('select id, username, email, reputation from users where id=?', (str(id),))
+		person_list = db.execute('SELECT id, last_name, first_name FROM people WHERE id=?', (str(id),))
+		person = person_list.fetchall()
+		if len(person) == 0:
+			flash('Nonexistent person')
+		else:
+			return render_template('show_person.html', people=person, id=id)
+	except ValueError:
+		flash('Not a valid id')
+	return redirect(url_for('show_entries'))
+
+def validate_date(date):
+	try:
+		return dateutil.parser.parse(date).date().strftime("%Y-%m-%d")
+	except ValueError:
+		return False
+
+
 def get_entry(id):
 	id = int(id)
 	try:
