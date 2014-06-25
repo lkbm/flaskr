@@ -35,7 +35,7 @@ create table votes (
 );
 
 
-drop table if exists people
+drop table if exists people;
 create table people (
 	id integer primary key autoincrement,
 	sid integer unique,
@@ -48,10 +48,14 @@ create table people (
 	enroll_3 date,
 	withdrawal_3 date,
 	free_as_of date,
-	reduced_as_of date,
+	reduced_as_of date
 );
 
+INSERT INTO people (last_name, first_name, enroll_1, withdrawal_1) VALUES ("Green", "Hank", 2014-08-26, 2014-09-01);
+INSERT INTO people (last_name, first_name, enroll_1) VALUES ("Manderly", "Wyman", 2014-08-28);
+INSERT INTO people (last_name, first_name, enroll_1, withdrawal_1) VALUES ("Stark", "Lyanna", 2014-08-30, 2014-09-02);
 
 -- For development purposes, prepopulate the database with a user:
 insert into users values (1, "admin", "$2a$11$KTg9hr8lVvePTxm9GkikV.gNw/6Is0to8S7RPSGo3NH43JbidHQky", "luca.masters2@gmail.com", 0);
+
 -- password=secret
