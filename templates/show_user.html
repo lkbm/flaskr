@@ -12,14 +12,6 @@
 	{% endfor %}
 	</ul>
 	<ul class=entries>
-	{% for entry in entries %}
-		<li><h2><b>{{ entry.title }}</b> by <a href="{{ url_for('show_user', id=entry.author_id) }}">{{ entry.author }}</a>
-			(<a href="{{ url_for('delete_entry', id=entry.id) }}">Delete</a>)
-		</h2>{{ entry.text }}<h3>{{ entry.timestamp }}</h3>
-		{% if session.logged_in %}
-		{% endif %}
-	{% else %}
-		<li><em>User has no posts.</em>
-	{% endfor %}
+		{% include "show_entries.jinja" %}
 	</ul>
 {% endblock %}
