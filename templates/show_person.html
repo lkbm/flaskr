@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+	{% for person in people %}
+		<h2>{{ person.first_name }} {{ person.last_name }}</h2>
+	{% else %}
+		<li><em>Person doesn't exist.</em>
+	{% endfor %}
+	</ul>
+{% endblock %}
