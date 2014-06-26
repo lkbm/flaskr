@@ -9,8 +9,8 @@ import requests
 import json
 import re
 import dateutil.parser
-import bcrypt
-from BeautifulSoup import BeautifulSoup
+#import bcrypt
+#from BeautifulSoup import BeautifulSoup
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, make_response, flash
 
 # Create the application
@@ -136,7 +136,9 @@ def login():
 			error = 'Nonexistent user'
 		elif users[0][2] == "":
 			error = 'username/password login not configured for account. Try Mozilla Persona login.'
-		elif bcrypt.hashpw(request.form['password'], users[0][2]) == users[0][2]:
+		#elif bcrypt.hashpw(request.form['password'], users[0][2]) == users[0][2]:
+		# Fix this
+		elif False:
 			session['logged_in'] = True
 			session['id'] = users[0][0]
 			session['username'] = users[0][1]
@@ -332,7 +334,9 @@ def add_user():
 	user_list = db.execute('select id, username, email from users where email=? or username=?', [request.form['email'], request.form['username']])
 	user = user_list.fetchall()
 	if len(user) == 0:
-		password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['WORK_FACTOR']))
+		#password = bcrypt.hashpw(request.form['password'], bcrypt.gensalt(app.config['WORK_FACTOR']))
+		# Fix this
+		password = 'secret'
 		db.execute('insert into users (username, email, password, reputation) values (?, ?, ?, 0)', [request.form['username'], request.form['email'], password])
 		db.commit()
 		flash('User added')
@@ -389,11 +393,12 @@ def test():
 @app.context_processor
 def utility_processor():
 	def sanitize_html(str):
-		soup = BeautifulSoup(str)
-		for tag in soup.findAll(True):
-				if tag.name not in app.config['ALLOWED_TAGS']:
-						tag.extract()
-		return unicode(soup)
+		#soup = BeautifulSoup(str)
+		#for tag in soup.findAll(True):
+		#		if tag.name not in app.config['ALLOWED_TAGS']:
+		#				tag.extract()
+		#return unicode(soup)
+		return  "Fix this."
 	return dict(sanitize_html=sanitize_html)
 
 if __name__ == '__main__':
