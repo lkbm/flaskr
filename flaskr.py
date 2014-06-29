@@ -335,8 +335,6 @@ def record_vote(id, vote_type):
 			elif entry['author'] == session['id']:
 				flash('You can\'t vote for yourself.')
 			else:
-				flash(session['id'])
-				flash(entry['author'])
 				diff = 1
 				# Counts any value other than 'down' as 'up'. Is that good?
 				if vote_type == 'down':
@@ -347,7 +345,7 @@ def record_vote(id, vote_type):
 				db.commit()
 		else:
 			flash('You have already voted on this entry.')
-		flash('Attemped to upvote entry id ' + str(id))
+		flash('Attemped to vote on entry id ' + str(id))
 	except ValueError:
 		flash('Not a valid id')
 	return redirect(url_for('show_entries'))
