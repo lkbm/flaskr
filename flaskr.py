@@ -320,7 +320,8 @@ def add_user():
 	return redirect(url_for('show_entries'))
 
 @app.route('/vote/<id>/<vote_type>')
-def record_vote(id, vote_type):
+@app.route('/vote/<id>/<vote_type>/<response>')
+def record_vote(id, vote_type, response='Normal'):
 	if not session.get('logged_in'):
 		abort(401)
 	try:
@@ -348,6 +349,10 @@ def record_vote(id, vote_type):
 		flash('Attemped to vote on entry id ' + str(id))
 	except ValueError:
 		flash('Not a valid id')
+		if response=='ajax':
+			return 'OK or FAIL'
+	if response=='ajax':
+		return 'OK or FAIL'
 	return redirect(url_for('show_entries'))
 
 @app.route('/initdb')
